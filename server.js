@@ -11,6 +11,7 @@ const leadRoutes = require("./routes/Lead");
 const dashboardRoutes = require("./routes/dashboard.js");
 const dealRoutes = require("./routes/Deal");
 const notificationRoutes = require("./routes/Notification");
+const searchRoutes = require("./routes/Search.js");
 
 require("dotenv").config();
 
@@ -28,6 +29,7 @@ app.use("/lead", leadRoutes);
 app.use("/deal", dealRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/notification", notificationRoutes);
+app.use("/search", searchRoutes);
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
