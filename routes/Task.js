@@ -61,6 +61,32 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "task not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      task,
+    });
+  } catch (error) {
+    console.error("Error fetching task:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+});
+
 // Delete All Tasks
 router.delete("/all", async (req, res) => {
   try {
