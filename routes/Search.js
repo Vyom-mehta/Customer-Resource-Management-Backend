@@ -1,108 +1,3 @@
-// const express = require("express");
-// const mongoose = require("mongoose");
-
-// const router = express.Router();
-
-// router.get("/", async (req, res) => {
-//   try {
-//     const { query } = req.query;
-
-//     console.log("query : ", query);
-
-//     if (!query || !query.trim()) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Search query is required",
-//       });
-//     }
-
-//     const searchText = query.trim();
-
-//     // Collections and fields that can be searched
-//     const searchableCollections = [
-//       {
-//         collection: "Lead",
-//         match: "leads",
-//         fields: ["name", "email", "phone", "company"],
-//       },
-//       {
-//         collection: "Meeting",
-//         match: "meetings",
-//         fields: ["title", "description", "email"],
-//       },
-//       {
-//         collection: "Campaign",
-//         match: "campaigns",
-//         fields: ["name", "description"],
-//       },
-//       {
-//         //
-//         collection: "deals",
-//         match: "deals",
-//         fields: ["name", "company"],
-//       },
-//       {
-//         //
-//         collection: "contacts",
-//         match: "contacts",
-//         fields: ["name", "email", "phone"],
-//       },
-
-//       {
-//         //
-//         collection: "tasks",
-//         match: "tasks",
-//         fields: ["subject", "owner"],
-//       },
-//       {
-//         //
-//         collection: "accounts",
-//         match: "accounts",
-//         fields: ["name", "number", "website"],
-//       },
-//     ];
-
-//     const regex = new RegExp(searchText, "i");
-
-//     for (const item of searchableCollections) {
-//       const collection = mongoose.connection.db.collection(item.collection);
-
-//       const conditions = item.fields.map((field) => ({
-//         [field]: regex,
-//       }));
-
-//       const result = await collection.findOne(
-//         { $or: conditions },
-//         { projection: { _id: 1 } }
-//       );
-
-//       console.log("result : ", result);
-
-//       if (result) {
-//         return res.json({
-//           success: true,
-//           match: item.match,
-//           id: result._id,
-//         });
-//       }
-//     }
-
-//     return res.status(200).json({
-//       success: false,
-//       message: "No matching record found",
-//     });
-//   } catch (error) {
-//     console.error("Search error:", error);
-
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// });
-
-// module.exports = router;
-
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -180,11 +75,14 @@ router.get("/", async (req, res) => {
     const allResults = [];
 
     for (const item of searchableCollections) {
+      // Give me the accounts collection from my MongoDB database.
       const collection = mongoose.connection.db.collection(item.collection);
 
       const conditions = item.fields.map((field) => ({
         [field]: regex,
       }));
+
+      console.log("conditions : ", conditions);
 
       const results = await collection
         .find(
@@ -202,9 +100,8 @@ router.get("/", async (req, res) => {
         .limit(20)
         .toArray();
 
-      console.log(`${item.collection} results:`, results.length);
-
       results.forEach((result) => {
+        console.log("result : ", result);
         const subtitle = item.subtitleFields
           .map((field) => result[field])
           .filter(Boolean)
